@@ -24,6 +24,8 @@ var (
 	ping    = flag.Int("ping", 2, "retry times to ping link on startup")
 	grpc    = flag.Bool("grpc", false, "start grpc server")
 	version = flag.Bool("v", false, "show current version of clash")
+
+	speed = flag.String("speed", "", "test speed")
 )
 
 func main() {
@@ -44,6 +46,12 @@ func main() {
 	}
 	if *test != "" {
 		if err := webServer.TestFromCMD(*test, conf); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	if *speed != "" {
+		if err := webServer.TestFromB64(*speed, conf); err != nil {
 			log.Fatal(err)
 		}
 		return

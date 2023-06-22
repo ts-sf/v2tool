@@ -52,12 +52,12 @@ var (
 
 	i18n = map[string]string{
 		"cn": `{
-			"Title":    "Lite SpeedTest 结果表",
+			"Title":    "v2tool SpeedTest 结果表",
 			"CreateAt": "测试时间",
 			"Traffic":  "总流量: %s. 总时间: %s, 可用节点: [%s]"
 		}`,
 		"en": `{
-			"Title":    "Lite SpeedTest Result Table",
+			"Title":    "v2tool SpeedTest Result Table",
 			"CreateAt": "Create At",
 			"Traffic":  "Traffic used: %s. Time used: %s, Working Nodes: [%s]"
 		}`,
@@ -364,7 +364,7 @@ func (t *Table) drawPoweredBy() {
 		return
 	}
 	t.SetFontFace(fontface)
-	msg := constant.Version + " powered by https://github.com/xxf098"
+	msg := constant.Version + " powered by https://github.com/ts-sf"
 	var x float64 = float64(t.width) - getWidth(fontface, msg) - t.options.lineWidth
 	var y float64 = (t.options.fontHeight+t.options.verticalpadding)*float64((len(t.nodes)+4)) + t.options.fontHeight*t.options.smallFontRatio
 	t.DrawString(msg, x, y)

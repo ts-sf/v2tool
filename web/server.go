@@ -131,6 +131,61 @@ func readConfig(configPath string) (*ProfileTestOptions, error) {
 	return options, nil
 }
 
+func TestFromB64(subscription string, configPath *string) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	options := ProfileTestOptions{
+		GroupName:       "Default",
+		SpeedTestMode:   "all",
+		PingMethod:      "googleping",
+		SortMethod:      "rspeed",
+		Concurrency:     2,
+		TestMode:        2,
+		Subscription:    subscription,
+		Language:        "cn",
+		FontSize:        24,
+		Theme:           "rainbow",
+		Timeout:         15 * time.Second,
+		GeneratePicMode: PIC_PATH,
+		OutputMode:      PIC_PATH,
+	}
+	if configPath != nil {
+		if opt, err := readConfig(*configPath); err == nil {
+			options = *opt
+			if options.GeneratePicMode != 0 {
+				options.OutputMode = options.GeneratePicMode
+			}
+			// options.GeneratePic = true
+		}
+	}
+	// check url
+	if len(subscription) > 0 && subscription != options.Subscription {
+		if _, err := url.Parse(subscription); err == nil {
+			options.Subscription = subscription
+		} else if _, err := os.Stat(subscription); err == nil {
+			options.Subscription = subscription
+		}
+	}
+	if jsonOpt, err := json.Marshal(options); err == nil {
+		log.Printf("json options: %s\n", string(jsonOpt))
+	}
+
+	opt := ParseOption{Type: PARSE_FILE}
+	links, err := ParseLinksWithOption(subscription, opt)
+	w := &OutputMessageWriter{}
+	p := ProfileTest{
+		Writer:      w,
+		MessageType: 1,
+		Links:       links,
+		Options:     &options,
+	}
+
+	p.testAll(ctx)
+
+	//_, err := TestContext(ctx, options, &OutputMessageWriter{})
+	return err
+}
+
 func TestFromCMD(subscription string, configPath *string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
